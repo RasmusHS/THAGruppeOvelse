@@ -26,25 +26,74 @@ namespace THAGruppeØvelse
             string Navn = mTxtBNavn.Text;
             string Adresse = mTxtBAdresse.Text;
 
+            string errorMessage = "";
+
             // assumption:
             bool MedlemsNr_ok = true, Navn_ok = true, Adresse_ok = true;
 
             // length check:
-            if (MedlemsNr.Length != 3) MedlemsNr_ok = false;
-            if (Navn.Length > 20 || Navn.Length < 2) Navn_ok = false;
-            if (Adresse.Length > 50 || Adresse.Length < 2) Adresse_ok = false;
+            if (MedlemsNr.Length != 3) 
+            {
+                MedlemsNr_ok = false;
+                errorMessage += "\nDer må kun indtastes tal i Medlems nr. feltet, samt maks 3 cifre.";
+            }
+
+            if (Navn.Length > 20 || Navn.Length < 2)
+            {
+                Navn_ok = false;
+                errorMessage += "\nDer skal minimum være 2 tegn og maks 20 tegn i Navn feltet.";
+            }
+
+            if (Adresse.Length > 50 || Adresse.Length < 2)
+            {
+                Adresse_ok = false;
+                errorMessage += "\nDer skal minimum være 2 tegn og maks 50 tegn i Adresse feltet.";
+            }
 
             // "<" check for JS tags ... NO cross site scripting here.:
-            if (MedlemsNr.Contains("'")) MedlemsNr_ok = false;
-            if (Navn.Contains("'")) Navn_ok = false;
-            if (Adresse.Contains("'")) Adresse_ok = false;
-            if (MedlemsNr.Contains("<")) MedlemsNr_ok = false;
-            if (Navn.Contains("<")) Navn_ok = false;
-            if (Adresse.Contains("<")) Adresse_ok = false;
+            if (MedlemsNr.Contains("'"))
+            {
+                MedlemsNr_ok = false;
+                errorMessage += "\nMedlems feltet må ikke indeholde ' .";
+            }
+
+            if (Navn.Contains("'"))
+            {
+                Navn_ok = false;
+                errorMessage += "\nNavn feltet må ikke indeholde ' .";
+            }
+
+            if (Adresse.Contains("'"))
+            {
+                Adresse_ok = false;
+                errorMessage += "\nAdresse feltet må ikke indeholde ' .";
+            }
+
+            if (MedlemsNr.Contains("<"))
+            {
+                MedlemsNr_ok = false;
+                errorMessage += "\nMedlems feltet må ikke indeholde < .";
+            }
+
+            if (Navn.Contains("<"))
+            {
+                Navn_ok = false;
+                errorMessage += "\nNavn feltet må ikke indeholde < .";
+            }
+
+            if (Adresse.Contains("<"))
+            {
+                Adresse_ok = false;
+                errorMessage += "\nAdresse feltet må ikke indeholde < .";
+            }
 
             // Check for alphanumeric characters
             Regex retal = new Regex(@"(^[0-9 ]*$)");
-            if (!retal.IsMatch(MedlemsNr)) MedlemsNr_ok = false;
+            if (!retal.IsMatch(MedlemsNr))
+            {
+                MedlemsNr_ok = false;
+                errorMessage += "\nMedlems nr feltet må indeholde tal.";
+            }
 
             // action
             if (MedlemsNr_ok && Navn_ok && Adresse_ok)
@@ -63,28 +112,10 @@ namespace THAGruppeØvelse
                     mTxtBAdresse.Text = "";
                 }
             }
-            else if (!MedlemsNr_ok)
-            {
-                MessageBox.Show("Der må kun indtastes tal i Medlems nr. feltet, samt maks 3 tegn.");
-                mTxtBMedlemNr.Text = "";
-                mTxtBNavn.Text = "";
-                mTxtBAdresse.Text = "";
-            }
 
-            else if (!Navn_ok)
+            if (errorMessage != "")
             {
-                MessageBox.Show("Der skal minimum være 2 tegn og maks 20 tegn i Navn feltet.");
-                mTxtBMedlemNr.Text = "";
-                mTxtBNavn.Text = "";
-                mTxtBAdresse.Text = "";
-            }
-
-            else if (!Adresse_ok)
-            {
-                MessageBox.Show("Der skal minimum være 2 tegn og maks 50 tegn i Adresse feltet.");
-                mTxtBMedlemNr.Text = "";
-                mTxtBNavn.Text = "";
-                mTxtBAdresse.Text = "";
+                MessageBox.Show(errorMessage);
             }
         }
 
